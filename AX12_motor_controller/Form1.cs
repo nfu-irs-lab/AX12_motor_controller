@@ -1,7 +1,6 @@
-﻿
-/*
+﻿/*
  * Name: AX-12 motor controller
- * Date: 2020-December-04
+ * Date: 2021-March-19
  */
 
 using System;
@@ -26,19 +25,21 @@ namespace AX12_motor_controller
 
             try
             {
+                // 嘗試尋找所有連接的 Serial Port。
+                // 並將第一個裝置的 Port Name 寫入 textBox_comport。
                 textBox_comport.Text = SerialPort.GetPortNames()[0];
             }
             catch
             {
                 textBox_comport.Text = "COM1";
             }
-            
         }
 
         private void button_connect_Click(object sender, EventArgs e)
         {
             if (serialPort1.IsOpen)
             {
+                // 已開啟，嘗試關閉 Serial Port。
                 try
                 {
                     serialPort1.Close();
@@ -47,12 +48,15 @@ namespace AX12_motor_controller
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error!\n" + ex.Message);
+                    MessageBox.Show($"Error!\r\n{ex.Message}");
                 }
             }
             else
             {
+                // 更新 Port name。
                 serialPort1.PortName = textBox_comport.Text;
+
+                // 未開啟，嘗試開啟 Serial Port。
                 try
                 {
                     serialPort1.Open();
@@ -61,7 +65,7 @@ namespace AX12_motor_controller
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error!\n" + ex.Message);
+                    MessageBox.Show($"Error!\r\n{ex.Message}");
                 }
             }
         }
@@ -76,47 +80,49 @@ namespace AX12_motor_controller
         /// <summary>
         /// Control the AX-12 motor.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="pos"></param>
-        /// <param name="speed"></param>
-        private void AX12(int id, int pos, int speed)
+        /// <param name="id">馬達 ID</param>
+        /// <param name="position">目標位置</param>
+        /// <param name="speed">速度</param>
+        private void AX12(int id, int position, int speed)
         {
-            if (pos > 1023)
+            // 避免數值超出允許範圍。
+            if (position > 1023)
             {
-                pos = 1023;
+                position = 1023;
             }
-            else if (pos < 0)
+            else if (position < 0)
             {
-                pos = 0;
+                position = 0;
             }
 
-            byte[] wd = new byte[11];
-            wd[0] = 0xff;
-            wd[1] = 0xff;
-            wd[2] = (byte)id;
-            wd[3] = 0x07;
-            wd[4] = 0x03;
-            wd[5] = 0x1e;
-            wd[6] = (byte)(pos % 256);
-            wd[7] = (byte)(pos / 256);
-            wd[8] = (byte)(0xff & speed);
-            wd[9] = (byte)(speed / 256);
-
+            // 建立傳輸資料。
+            byte[] data = new byte[11];
+            data[0] = 0xff;
+            data[1] = 0xff;
+            data[2] = (byte)id;
+            data[3] = 0x07;
+            data[4] = 0x03;
+            data[5] = 0x1e;
+            data[6] = (byte)(position % 256);
+            data[7] = (byte)(position / 256);
+            data[8] = (byte)(0xff & speed);
+            data[9] = (byte)(speed / 256);
             byte a = 0;
             for (int i = 2; i < 10; i++)
             {
-                a += wd[i];
+                a += data[i];
             }
-            wd[10] = (byte)(0xff - a);
+            data[10] = (byte)(0xff - a);
 
-            // Send
+            // Send.
             try
             {
-                serialPort1.Write(wd, 0, 11);
+                serialPort1.Write(data, 0, 11);
                 Thread.Sleep(1);
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show($"Error!\r\n{ex.Message}");
             }
         }
     }
