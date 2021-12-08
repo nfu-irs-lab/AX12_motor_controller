@@ -31,7 +31,7 @@ namespace AX12_motor_controller
             }
             catch
             {
-                textBox_comport.Text = "COM1";
+                textBox_comport.Text = "";
             }
         }
 
