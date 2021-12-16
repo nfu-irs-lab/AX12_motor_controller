@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.serialPort = new System.IO.Ports.SerialPort(this.components);
             this.numericUpDown_motor_id = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_motor_pos = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_motor_speed = new System.Windows.Forms.NumericUpDown();
@@ -53,7 +53,7 @@
             // 
             // serialPort1
             // 
-            this.serialPort1.BaudRate = 1000000;
+            this.serialPort.BaudRate = 1000000;
             // 
             // numericUpDown_motor_id
             // 
@@ -259,7 +259,7 @@
 
         #endregion
 
-        private System.IO.Ports.SerialPort serialPort1;
+        private System.IO.Ports.SerialPort serialPort;
         private System.Windows.Forms.NumericUpDown numericUpDown_motor_id;
         private System.Windows.Forms.NumericUpDown numericUpDown_motor_pos;
         private System.Windows.Forms.NumericUpDown numericUpDown_motor_speed;

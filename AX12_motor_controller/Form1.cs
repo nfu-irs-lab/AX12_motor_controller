@@ -35,48 +35,6 @@ namespace AX12_motor_controller
             }
         }
 
-        private void button_connect_Click(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
-            {
-                // 已開啟，嘗試關閉 Serial Port。
-                try
-                {
-                    serialPort1.Close();
-                    button_connect.Text = "Connect";
-                    textBox_comport.Enabled = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error!\r\n{ex.Message}");
-                }
-            }
-            else
-            {
-                // 更新 Port name。
-                serialPort1.PortName = textBox_comport.Text;
-
-                // 未開啟，嘗試開啟 Serial Port。
-                try
-                {
-                    serialPort1.Open();
-                    button_connect.Text = "Disconnect";
-                    textBox_comport.Enabled = false;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error!\r\n{ex.Message}");
-                }
-            }
-        }
-
-        private void button_send_Click(object sender, EventArgs e)
-        {
-            AX12((int)numericUpDown_motor_id.Value,
-                 (int)numericUpDown_motor_pos.Value,
-                 (int)numericUpDown_motor_speed.Value);
-        }
-
         /// <summary>
         /// Control the AX-12 motor.
         /// </summary>
@@ -117,13 +75,55 @@ namespace AX12_motor_controller
             // Send.
             try
             {
-                serialPort1.Write(data, 0, 11);
+                serialPort.Write(data, 0, 11);
                 Thread.Sleep(1);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error!\r\n{ex.Message}");
             }
+        }
+
+        private void button_connect_Click(object sender, EventArgs e)
+        {
+            if (serialPort.IsOpen)
+            {
+                // 已開啟，嘗試關閉 Serial Port。
+                try
+                {
+                    serialPort.Close();
+                    button_connect.Text = "Connect";
+                    textBox_comport.Enabled = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error!\r\n{ex.Message}");
+                }
+            }
+            else
+            {
+                // 更新 Port name。
+                serialPort.PortName = textBox_comport.Text;
+
+                // 未開啟，嘗試開啟 Serial Port。
+                try
+                {
+                    serialPort.Open();
+                    button_connect.Text = "Disconnect";
+                    textBox_comport.Enabled = false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error!\r\n{ex.Message}");
+                }
+            }
+        }
+
+        private void button_send_Click(object sender, EventArgs e)
+        {
+            AX12((int)numericUpDown_motor_id.Value,
+                 (int)numericUpDown_motor_pos.Value,
+                 (int)numericUpDown_motor_speed.Value);
         }
     }
 }
