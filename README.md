@@ -1,4 +1,4 @@
-# AX12_motor_controller
+# AX-12 Motor Controller
 
 基本的 AX-12 馬達控制程式。
 
