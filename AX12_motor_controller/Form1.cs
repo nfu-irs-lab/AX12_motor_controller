@@ -17,9 +17,6 @@ namespace AX12_motor_controller
 
         private void button_connect_Click(object sender, EventArgs e)
         {
-            // 更新 Port name。
-            serialPort.PortName = comboBox_portName.SelectedItem.ToString();
-
             if (serialPort.IsOpen)
             {
                 // Serial Port 已開啟，嘗試關閉。
@@ -39,6 +36,9 @@ namespace AX12_motor_controller
             }
             else
             {
+                // 更新 Port name。
+                serialPort.PortName = comboBox_portName.SelectedItem.ToString();
+
                 // Serial Port 未開啟，嘗試開啟。
                 try
                 {
@@ -139,6 +139,9 @@ namespace AX12_motor_controller
             }
         }
 
+        /// <summary>
+        /// 更新Serial Port Name下拉式選單。
+        /// </summary>
         private void UpdateSerialPortNames()
         {
             comboBox_portName.Items.Clear();
